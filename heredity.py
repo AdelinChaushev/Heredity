@@ -142,24 +142,27 @@ def joint_probability(people, one_gene, two_genes, have_trait):
     joint_prob = 1
     for person in people:
         person_prob = 1
-        genes = 0
-        motherPassProbability = getParentPassProbability(people[person]["mother"],one_gene,two_genes)
-        fatherPassProbability = getParentPassProbability(people[person]["father"],one_gene,two_genes)
+        genes = 1
+        motherPassProbability = None
+        fatherPassProbability = None
+        if people[person]["mother"] != None:
+         motherPassProbability = getParentPassProbability(people[person]["mother"],one_gene,two_genes)
+         fatherPassProbability = getParentPassProbability(people[person]["father"],one_gene,two_genes)
         if person in one_gene:
             genes = 1
-            if people[person]["mother"] == None:
+            if motherPassProbability == None:
                 person_prob *= PROBS["gene"][1] 
             else:
                 person_prob *= (1 - motherPassProbability) *  fatherPassProbability + (1 - fatherPassProbability) * motherPassProbability
         elif person in two_genes:
             genes = 2
-            if people[person]["mother"] == None:
+            if motherPassProbability == None:
                 person_prob *= PROBS["gene"][2]          
             else:
                 person_prob *= fatherPassProbability * motherPassProbability
         else:
             genes = 0
-            if people[person]["mother"] == None:
+            if motherPassProbability == None:
                 person_prob *= PROBS["gene"][0]          
             else:
                 person_prob *= (1 - fatherPassProbability) * (1 - motherPassProbability) 
@@ -207,8 +210,10 @@ def normalize(probabilities):
     for person in probabilities:
      genes_sum =  sum(probabilities[person]["gene"].values())
      trait_sum =  sum(probabilities[person]["trait"].values())
+
      for gene in probabilities[person]["gene"]:
          probabilities[person]["gene"][gene] /= genes_sum
+
      for trait in  probabilities[person]["trait"]:
          probabilities[person]["trait"][trait] /= trait_sum    
 
