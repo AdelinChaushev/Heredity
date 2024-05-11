@@ -167,9 +167,9 @@ def joint_probability(people, one_gene, two_genes, have_trait):
             else:
                 person_prob *= (1 - fatherPassProbability) * (1 - motherPassProbability) 
         if person in have_trait:
-         person_prob *= PROBS["trait"][genes][False]
+         person_prob *= PROBS["trait"][genes][True]
         else:
-         person_prob *= PROBS["trait"][genes][True]  
+         person_prob *= PROBS["trait"][genes][False]  
         joint_prob *= person_prob      
     return joint_prob               
 
